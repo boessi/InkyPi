@@ -31,11 +31,13 @@
 
                 const fileElement = document.createElement("div");
                 fileElement.innerHTML = `
+                    <img src="/static/images/saved/${fileName}" class="image-file" />
                     <span id="fileNameText">${fileName}</span>
                     <button type="button" class="remove-file-btn" onclick="removeAddedFile('${fileName}')">X</button>
                 `;
                 fileElement.id = `added-${fileName}`;
                 fileElement.classList.add("file-name");
+                fileElement.classList.add("image-file-container");
                 fileElement.setAttribute('delete-on-submit', '');
                 fileNamesDisplay.appendChild(fileElement);
             }
@@ -71,11 +73,13 @@
                 // Create an element for the file name
                 const fileElement = document.createElement("div");
                 fileElement.innerHTML = `
+                    <img src="/static/images/saved/${fileName}" class="image-file" />
                     <span id="fileNameText">${fileName}</span>
                     <button type="button" class="remove-file-btn" onclick="removeExistingFile('${fileName}')">X</button>
                 `;
                 fileElement.id = `existing-${fileName}`;
                 fileElement.classList.add("file-name");
+                fileElement.classList.add("image-file-container");
                 fileElement.setAttribute('delete-on-submit', '');
                 fileNamesDisplay.appendChild(fileElement);
 
