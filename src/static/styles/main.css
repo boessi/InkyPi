@@ -710,3 +710,30 @@ body {
     border-radius: 4px;
     font-size: 0.8em;
 }
+
+/* Image File Container */
+.image-file-container {
+    position: relative;
+    width: 205px;
+    margin: 0 auto;
+    float: left;
+}
+.image-file-container span#fileNameText {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 170px;
+    display: inline-block;
+}
+.image-file {
+    object-fit: cover;
+    width: 200px;
+    height: 120px;
+
+    display: inline-block;
+    padding: 4px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0 4px 15px 4px;
+}
