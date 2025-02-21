@@ -49,7 +49,7 @@ class DisplayManager:
         if not image:
             raise ValueError(f"No image provided.")
 
-        self.epd.Init()
+        self.epd.init()
 
         # Save the image
         image.save(self.device_config.current_image_file)
