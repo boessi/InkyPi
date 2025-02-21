@@ -38,7 +38,7 @@ class DisplayManager:
         """Manages the display and rendering of images."""
         self.device_config = device_config
         self.epd = epd7in3e.EPD()
-        self.epd.Init()
+        self.epd.init()
         self.epd.Clear()
 
         # store display resolution in device config
