@@ -1,5 +1,5 @@
 import os
-import epd13in3e
+import epd7in3e
 from inky.auto import auto
 from utils.image_utils import resize_image, change_orientation
 from plugins.plugin_registry import get_plugin_instance
@@ -37,7 +37,7 @@ class DisplayManager:
     def __init__(self, device_config):
         """Manages the display and rendering of images."""
         self.device_config = device_config
-        self.epd = epd13in3e.EPD()
+        self.epd = epd7in3e.EPD()
         self.epd.Init()
         self.epd.Clear()
 
