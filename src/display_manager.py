@@ -1,9 +1,15 @@
 import os
-from lib.waveshare_epd import epd7in3e
-from inky.auto import auto
+
 from utils.image_utils import resize_image, change_orientation
 from plugins.plugin_registry import get_plugin_instance
 from PIL import Image
+
+import importlib
+
+module_path = "lib.waveshare_epd.epd7in3e"
+
+# Dynamically import the module
+display_module = importlib.import_module(module_path)
 
 # Define the six colors supported by Waveshare E Ink
 WAVESHARE_PALETTE = [
@@ -37,7 +43,7 @@ class DisplayManager:
     def __init__(self, device_config):
         """Manages the display and rendering of images."""
         self.device_config = device_config
-        self.epd = epd7in3e.EPD()
+        self.epd = display_module.EPD()
         self.epd.init()
         self.epd.Clear()
 
