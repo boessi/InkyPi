@@ -64,6 +64,12 @@ class DisplayManager:
         if not image:
             raise ValueError(f"No image provided.")
 
+        if display_waveshare:
+            if hasattr(self.the_display, "init"):
+                self.the_display.init()
+            else:
+                self.the_display.Init()
+
         # Save the image
         image.save(self.device_config.current_image_file)
 
