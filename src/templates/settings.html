@@ -69,16 +69,28 @@
         <!-- Settings Content -->
         <form class="settings-form">
             <div id="settings-container">
-                <!-- Device Name -->
+                
                 <div class="form-group">
-                    <label for="deviceName" class="form-label">Device Name:</label>
-                    <input type="text" 
-                           id="deviceName" 
-                           name="deviceName" 
-                           placeholder="Type something..." 
-                           value="{{ device_settings.name }}" 
-                           required 
-                           class="form-input">
+                <!-- Device Name -->
+                    <div class="form-group">
+                        <label for="deviceName" class="form-label">Device Name:</label>
+                        <input type="text" 
+                            id="deviceName" 
+                            name="deviceName" 
+                            placeholder="Type something..." 
+                            value="{{ device_settings.name }}" 
+                            required 
+                            class="form-input">
+                    </div>
+                    <!-- Device Type -->
+                    <div class="form-group">
+                        <label for="deviceType" class="form-label">Device Type:</label>
+                        <select id="deviceType" name="deviceType" class="form-input">
+                            <option value="inkypi" {% if device_settings.deviceType == "inkypi" %}selected{% endif %}>Pimoroni Inky Impression</option>
+                            <option value="lib.waveshare_epd.epd7in3e" {% if device_settings.deviceType == "lib.waveshare_epd.epd7in3e" %}selected{% endif %}>Waveshare 7.3inch e-Paper HAT (E)</option>
+                            <option value="lib.waveshare_epd.epd4in0e" {% if device_settings.deviceType == "lib.waveshare_epd.epd4in0e" %}selected{% endif %}>Waveshare 4inch e-Paper HAT+ (E)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <!-- Orientation Dropdown -->

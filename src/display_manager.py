@@ -3,15 +3,9 @@ import os
 from utils.image_utils import resize_image, change_orientation
 from plugins.plugin_registry import get_plugin_instance
 from PIL import Image
+from enum import Enum
 
 import importlib
-
-module_path = "lib.waveshare_epd.epd7in3e"
-
-# Dynamically import the module
-display_module = importlib.import_module(module_path)
-
-display_waveshare = hasattr(display_module, "EPD")
 
 # Define the six colors supported by Waveshare E Ink
 WAVESHARE_PALETTE = [
@@ -22,6 +16,10 @@ WAVESHARE_PALETTE = [
     (0, 0, 255),      # Blue
     (0, 255, 0),      # Green
 ]
+
+class DisplayType(Enum):
+    InkyImpression = 1
+    Waveshare = 2
 
 def quantize_image(image):
     """
@@ -46,29 +44,44 @@ class DisplayManager:
         """Manages the display and rendering of images."""
         self.device_config = device_config
 
-        if display_waveshare:
-            self.the_display = display_module.EPD()
+        # Dynamically import the module
+        if importlib.is_module_available(self.device_config.get_config("deviceType")):
+            self.display_module =   importlib.import_module(self.device_config.get_config("deviceType"))
+            # Initialize the module
+            self.init_module()
+
+            # store display resolution in device config
+            device_config.update_value("resolution", [int(self.the_display.width), int(self.the_display.height)])
+
+    def init_module(self):
+        if self.display_module is None:
+            return
+
+        self.display_type = DisplayType.Waveshare if hasattr(self.display_module, "EPD") else DisplayType.InkyImpression
+
+        if self.display_type == DisplayType.Waveshare:
+            if self.the_display is None:
+                self.the_display = self.display_module.EPD()
+
             if hasattr(self.the_display, "init"):
                 self.the_display.init()
             else:
                 self.the_display.Init()
-        else:
-            self.the_display = display_module.auto()
+
+        elif self.the_display is None:
+            self.the_display = self.display_module.auto()
             self.the_display.set_border(self.inky_display.BLACK)
 
-        # store display resolution in device config
-        device_config.update_value("resolution", [int(self.the_display.width), int(self.the_display.height)])
-
     def display_image(self, image, image_settings=[]):
+        
+        if self.display_module is None:
+            return
+
         """Displays the image provided, applying the image_settings."""
         if not image:
             raise ValueError(f"No image provided.")
 
-        if display_waveshare:
-            if hasattr(self.the_display, "init"):
-                self.the_display.init()
-            else:
-                self.the_display.Init()
+        self.init_module()
 
         # Save the image
         image.save(self.device_config.current_image_file)
@@ -77,12 +90,10 @@ class DisplayManager:
         image = change_orientation(image, self.device_config.get_config("orientation"))
         image = resize_image(image, self.device_config.get_resolution(), image_settings)
 
-        # Convert the image to the supported colors using dithering
-        if display_waveshare:
-            image = quantize_image(image)
-
         # Display the image on the Inky display
-        if display_waveshare:
+        if self.display_type == DisplayType.Waveshare:
+            # Convert the image to the supported colors using dithering
+            image = quantize_image(image)
             self.the_display.display(self.the_display.getbuffer(image))
             self.the_display.sleep()
         else:
