@@ -30,6 +30,7 @@ def save_settings():
 
         settings = {
             "name": form_data.get("deviceName"),
+            "deviceType": form_data.get("deviceType"),
             "orientation": form_data.get("orientation"),
             "inverted_image": form_data.get("invertImage"),
             "timezone": form_data.get("timezoneName"),
