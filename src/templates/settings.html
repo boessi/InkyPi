@@ -108,16 +108,28 @@
         <!-- Settings Content -->
         <form class="settings-form">
             <div id="settings-container">
-                <!-- Device Name -->
+                
                 <div class="form-group">
-                    <label for="deviceName" class="form-label">Device Name:</label>
-                    <input type="text" 
-                           id="deviceName" 
-                           name="deviceName" 
-                           placeholder="Type something..." 
-                           value="{{ device_settings.name }}" 
-                           required 
-                           class="form-input">
+                <!-- Device Name -->
+                    <div class="form-group">
+                        <label for="deviceName" class="form-label">Device Name:</label>
+                        <input type="text" 
+                            id="deviceName" 
+                            name="deviceName" 
+                            placeholder="Type something..." 
+                            value="{{ device_settings.name }}" 
+                            required 
+                            class="form-input">
+                    </div>
+                    <!-- Device Type -->
+                    <div class="form-group">
+                        <label for="deviceType" class="form-label">Device Type:</label>
+                        <select id="deviceType" name="deviceType" class="form-input">
+                            <option value="inky.auto" {% if device_settings.deviceType == "inky.auto" %}selected{% endif %}>Pimoroni Inky Impression</option>
+                            <option value="lib.waveshare_epd.epd7in3e" {% if device_settings.deviceType == "lib.waveshare_epd.epd7in3e" %}selected{% endif %}>Waveshare 7.3inch e-Paper HAT (E)</option>
+                            <option value="lib.waveshare_epd.epd4in0e" {% if device_settings.deviceType == "lib.waveshare_epd.epd4in0e" %}selected{% endif %}>Waveshare 4inch e-Paper HAT+ (E)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <!-- Orientation Dropdown -->
@@ -126,6 +138,8 @@
                         <select id="orientation" name="orientation" class="form-input">
                             <option value="horizontal" {% if device_settings.orientation == "horizontal" %}selected{% endif %}>Horizontal</option>
                             <option value="vertical" {% if device_settings.orientation == "vertical" %}selected{% endif %}>Vertical</option>
+                            <option value="horizontal-flipped" {% if device_settings.orientation == "horizontal-flipped" %}selected{% endif %}>Horizontal-Flipped</option>
+                            <option value="vertical-flipped" {% if device_settings.orientation == "vertical-flipped" %}selected{% endif %}>Vertical-Flipped</option>
                         </select>
                         <!-- Invert Image Checkbox -->
                         <label class="form-label" for="invertImage">Invert Image</label>
