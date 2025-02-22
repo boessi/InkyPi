@@ -44,9 +44,11 @@ class DisplayManager:
         """Manages the display and rendering of images."""
         self.device_config = device_config
 
+        device_type = self.device_config.get_config("deviceType")
+
         # Dynamically import the module
-        if importlib.is_module_available(self.device_config.get_config("deviceType")):
-            self.display_module =   importlib.import_module(self.device_config.get_config("deviceType"))
+        if bool(device_type and device_type.strip()) and importlib.util.find_spec(device_type) is not None:
+            self.display_module =   importlib.import_module(device_type)
             # Initialize the module
             self.init_module()
 
