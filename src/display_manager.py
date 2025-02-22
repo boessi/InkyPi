@@ -44,6 +44,11 @@ class DisplayManager:
         """Manages the display and rendering of images."""
         self.device_config = device_config
 
+        self.display_type = None
+        self.display_module = None
+        self.display_instance = None
+        self.display_manufacture_type = None
+
     def init_module(self):
         device_type = self.device_config.get_config("deviceType")
 
