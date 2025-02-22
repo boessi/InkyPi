@@ -83,7 +83,7 @@ class DisplayManager:
             self.display_instance.set_border(self.display_instance.BLACK)
 
         # store display resolution in device config
-        self.device_config.update_value("resolution", [int(self.display_instance.width), int(self.display_instance.height)])
+        self.device_config.update_value("resolution", [int(self.display_instance.width), int(self.display_instance.height)], write=True)
 
         return True
 
