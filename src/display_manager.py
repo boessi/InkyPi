@@ -80,7 +80,7 @@ class DisplayManager:
 
         elif self.display_instance is None:
             self.display_instance = self.display_module.auto()
-            self.display_instance.set_border(self.inky_display.BLACK)
+            self.display_instance.set_border(self.display_instance.BLACK)
 
         # store display resolution in device config
         self.device_config.update_value("resolution", [int(self.display_instance.width), int(self.display_instance.height)])
