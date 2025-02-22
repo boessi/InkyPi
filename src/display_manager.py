@@ -44,46 +44,50 @@ class DisplayManager:
         """Manages the display and rendering of images."""
         self.device_config = device_config
 
+    def init_module(self):
         device_type = self.device_config.get_config("deviceType")
 
-        # Dynamically import the module
-        if bool(device_type and device_type.strip()) and importlib.util.find_spec(device_type) is not None:
-            self.display_module =   importlib.import_module(device_type)
-            # Initialize the module
-            self.init_module()
+        if self.display_type != device_type:
+            self.display_module = None
+            self.display_instance = None
 
-            # store display resolution in device config
-            device_config.update_value("resolution", [int(self.the_display.width), int(self.the_display.height)])
-
-    def init_module(self):
         if self.display_module is None:
-            return
+            # Dynamically import the module
+            if not (bool(device_type and device_type.strip()) and importlib.util.find_spec(device_type) is not None):
+                return False
 
+            self.display_module = importlib.import_module(device_type)
+
+        if self.display_module is None:
+            return False
+        
         self.display_type = DisplayType.Waveshare if hasattr(self.display_module, "EPD") else DisplayType.InkyImpression
 
         if self.display_type == DisplayType.Waveshare:
-            if self.the_display is None:
-                self.the_display = self.display_module.EPD()
+            if self.display_instance is None:
+                self.display_instance = self.display_module.EPD()
 
-            if hasattr(self.the_display, "init"):
-                self.the_display.init()
+            if hasattr(self.display_instance, "init"):
+                self.display_instance.init()
             else:
-                self.the_display.Init()
+                self.display_instance.Init()
 
-        elif self.the_display is None:
-            self.the_display = self.display_module.auto()
-            self.the_display.set_border(self.inky_display.BLACK)
+        elif self.display_instance is None:
+            self.display_instance = self.display_module.auto()
+            self.display_instance.set_border(self.inky_display.BLACK)
+
+        # store display resolution in device config
+        self.device_config.update_value("resolution", [int(self.display_instance.width), int(self.display_instance.height)])
+
+        return True
 
     def display_image(self, image, image_settings=[]):
-        
-        if self.display_module is None:
-            return
-
         """Displays the image provided, applying the image_settings."""
         if not image:
             raise ValueError(f"No image provided.")
 
-        self.init_module()
+        if not self.init_module():
+            return
 
         # Save the image
         image.save(self.device_config.current_image_file)
@@ -96,8 +100,8 @@ class DisplayManager:
         if self.display_type == DisplayType.Waveshare:
             # Convert the image to the supported colors using dithering
             image = quantize_image(image)
-            self.the_display.display(self.the_display.getbuffer(image))
-            self.the_display.sleep()
+            self.display_instance.display(self.display_instance.getbuffer(image))
+            self.display_instance.sleep()
         else:
-            self.the_display.set_image(image)
-            self.the_display.show()
+            self.display_instance.set_image(image)
+            self.display_instance.show()
