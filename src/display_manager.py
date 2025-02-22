@@ -17,7 +17,7 @@ WAVESHARE_PALETTE = [
     (0, 255, 0),      # Green
 ]
 
-class DisplayType(Enum):
+class DisplayManufactureType(Enum):
     InkyImpression = 1
     Waveshare = 2
 
@@ -47,23 +47,24 @@ class DisplayManager:
     def init_module(self):
         device_type = self.device_config.get_config("deviceType")
 
-        if self.display_type != device_type:
+        if self.display_type is None or self.display_type != device_type:
+            self.display_type = device_type
             self.display_module = None
             self.display_instance = None
 
         if self.display_module is None:
             # Dynamically import the module
-            if not (bool(device_type and device_type.strip()) and importlib.util.find_spec(device_type) is not None):
+            if not (bool(self.display_type and self.display_type.strip()) and importlib.util.find_spec(self.display_type) is not None):
                 return False
 
-            self.display_module = importlib.import_module(device_type)
+            self.display_module = importlib.import_module(self.display_type)
 
         if self.display_module is None:
             return False
-        
-        self.display_type = DisplayType.Waveshare if hasattr(self.display_module, "EPD") else DisplayType.InkyImpression
 
-        if self.display_type == DisplayType.Waveshare:
+        self.display_manufacture_type = DisplayManufactureType.Waveshare if hasattr(self.display_module, "EPD") else DisplayManufactureType.InkyImpression
+
+        if self.display_manufacture_type == DisplayManufactureType.Waveshare:
             if self.display_instance is None:
                 self.display_instance = self.display_module.EPD()
 
@@ -97,7 +98,7 @@ class DisplayManager:
         image = resize_image(image, self.device_config.get_resolution(), image_settings)
 
         # Display the image on the Inky display
-        if self.display_type == DisplayType.Waveshare:
+        if self.display_manufacture_type == DisplayManufactureType.Waveshare:
             # Convert the image to the supported colors using dithering
             image = quantize_image(image)
             self.display_instance.display(self.display_instance.getbuffer(image))
