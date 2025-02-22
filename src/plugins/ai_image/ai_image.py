@@ -67,7 +67,7 @@ class AIImage(BasePlugin):
             "quality": "standard"
         }
         if model == "dall-e-3":
-            args["size"] = "1792x1024" if orientation == "horizontal" else "1024x1792"
+            args["size"] = "1792x1024" if orientation == "horizontal" or orientation == "horizontal-flipped" else "1024x1792"
             args["quality"] = quality
 
         response = ai_client.images.generate(**args)
