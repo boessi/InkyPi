@@ -80,12 +80,11 @@ class DisplayManager:
         # Boost contrast
         image = ImageEnhance.Contrast(image).enhance(1.3)
 
-        # Convert to web-safe palette with dithering
-        image = image.convert('RGB').convert('P', palette=Image.ADAPTIVE, dither=Image.FLOYDSTEINBERG)
-
         # Display the image on the Inky display
         if self.display_manufacture_type == DisplayManufactureType.Waveshare:
-            # Convert the image to the supported colors using dithering
+            # Convert to web-safe palette with dithering
+            image = image.convert('RGB').convert('P', palette=Image.ADAPTIVE, dither=Image.FLOYDSTEINBERG)
+
             self.display_instance.display(self.display_instance.getbuffer(image))
             self.display_instance.sleep()
         else:
