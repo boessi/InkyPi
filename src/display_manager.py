@@ -2,42 +2,14 @@ import os
 from inky.auto import auto
 from utils.image_utils import resize_image, change_orientation, apply_image_enhancement
 from plugins.plugin_registry import get_plugin_instance
-from PIL import Image
+from PIL import Image, ImageEnhance
 from enum import Enum
 
 import importlib
 
-# Define the six colors supported by Waveshare E Ink
-WAVESHARE_PALETTE = [
-    (0, 0, 0),        # Black
-    (255, 255, 255),  # White
-    (255, 255, 0),    # Yellow
-    (255, 0, 0),      # Red
-    (0, 0, 255),      # Blue
-    (0, 255, 0),      # Green
-]
-
 class DisplayManufactureType(Enum):
     InkyImpression = 1
     Waveshare = 2
-
-def quantize_image(image):
-    """
-    Converts an image to the 6-color palette supported by Waveshare E Ink
-    using dithering.
-    """
-    # Convert image to RGB if not already
-    image = image.convert("RGB")
-
-    # Create a palette image with only the 6 supported colors
-    palette_image = Image.new("P", (1, 1))
-    palette = []
-    for color in WAVESHARE_PALETTE:
-        palette.extend(color)  # Flatten RGB tuples
-    palette_image.putpalette(palette + [0] * (256 - len(WAVESHARE_PALETTE)) * 3)
-
-    # Convert the image using the custom palette with dithering
-    return image.quantize(palette=palette_image, dither=Image.Dither.FLOYDSTEINBERG)
 
 class DisplayManager:
     def __init__(self, device_config):
@@ -103,10 +75,18 @@ class DisplayManager:
         image = resize_image(image, self.device_config.get_resolution(), image_settings)
         image = apply_image_enhancement(image, self.device_config.get_config("image_settings"))
 
+        # Boost saturation
+        image = ImageEnhance.Color(image).enhance(2.0)
+
+        # Boost contrast
+        image = ImageEnhance.Contrast(image).enhance(1.3)
+
+        # Convert to web-safe palette with dithering
+        image = image.convert('RGB').convert('P', palette=Image.ADAPTIVE, dither=Image.FLOYDSTEINBERG)
+
         # Display the image on the Inky display
         if self.display_manufacture_type == DisplayManufactureType.Waveshare:
             # Convert the image to the supported colors using dithering
-            image = quantize_image(image)
             self.display_instance.display(self.display_instance.getbuffer(image))
             self.display_instance.sleep()
         else:
