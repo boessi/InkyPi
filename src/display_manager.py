@@ -75,7 +75,7 @@ class DisplayManager:
         image = resize_image(image, self.device_config.get_resolution(), image_settings)
 
         # Boost saturation
-        image = ImageEnhance.Color(image).enhance(2.0)
+        image = ImageEnhance.Color(image).enhance(1.4)
 
         # Boost contrast
         image = ImageEnhance.Contrast(image).enhance(1.3)
