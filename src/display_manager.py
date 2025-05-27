@@ -2,9 +2,6 @@ import os
 from inky.auto import auto
 from utils.image_utils import resize_image, change_orientation, apply_image_enhancement
 from plugins.plugin_registry import get_plugin_instance
-from PIL import Image, ImageEnhance
-from enum import Enum
-
 import importlib
 from PIL import Image, ImageEnhance
 from enum import Enum
