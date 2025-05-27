@@ -6,8 +6,6 @@ import importlib
 from PIL import Image, ImageEnhance
 from enum import Enum
 
-import importlib
-
 class DisplayManufactureType(Enum):
     InkyImpression = 1
     Waveshare = 2
