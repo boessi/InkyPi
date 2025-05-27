@@ -103,17 +103,11 @@ class DisplayManager:
         self.device_config.update_value("resolution", [int(self.display_instance.width), int(self.display_instance.height)], write=True)
 
         return True
-        self.device_config.update_value("resolution", [int(self.display_instance.width), int(self.display_instance.height)], write=True)
-
-        return True
 
     def display_image(self, image, image_settings=[]):
         """Displays the image provided, applying the image_settings."""
         if not image:
             raise ValueError(f"No image provided.")
-
-        if not self.init_module():
-            return
 
         if not self.init_module():
             return
@@ -126,25 +120,12 @@ class DisplayManager:
         image = resize_image(image, self.device_config.get_resolution(), image_settings)
         image = apply_image_enhancement(image, self.device_config.get_config("image_settings"))
 
-        # Boost saturation
-        image = ImageEnhance.Color(image).enhance(1.4)
-
-        # Boost contrast
-        image = ImageEnhance.Contrast(image).enhance(1.3)
-
         # Display the image on the Inky display
-        if self.display_manufacture_type == DisplayManufactureType.Waveshare:
-            # Convert to web-safe palette with dithering
-            image = image.convert('RGB').convert('P', palette=Image.ADAPTIVE, dither=Image.FLOYDSTEINBERG)
+
         if self.display_manufacture_type == DisplayManufactureType.Waveshare:
             # Convert to web-safe palette with dithering
             image = image.convert('RGB').convert('P', palette=Image.ADAPTIVE, dither=Image.FLOYDSTEINBERG)
 
-            self.display_instance.display(self.display_instance.getbuffer(image))
-            self.display_instance.sleep()
-        else:
-            self.display_instance.set_image(image)
-            self.display_instance.show()
             self.display_instance.display(self.display_instance.getbuffer(image))
             self.display_instance.sleep()
         else:
